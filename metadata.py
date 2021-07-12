@@ -188,11 +188,5 @@ class Ui_Dialog:
             os.remove(self.data_img)
         else:
             print("No picture selected!")
-    
-def save_audio(pathfile_filename):
-    localpath = str(pathfile_filename)
-    op_audio = eyed3.load(localpath)
-    op_audio.tag.title = "santuy"
-    op_audio.tag.save()
 
     

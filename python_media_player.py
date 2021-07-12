@@ -1,8 +1,8 @@
-from PyQt5.QtWidgets import QApplication, QStackedWidget, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QLabel, QSlider, QStyle, QSizePolicy, QFileDialog
+from PyQt5.QtWidgets import QApplication, QComboBox, QStackedWidget, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QLabel, QSlider, QStyle, QSizePolicy, QFileDialog, QMenuBar
 import sys
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 from PyQt5.QtMultimediaWidgets import QVideoWidget
-from PyQt5.QtGui import QIcon, QPalette
+from PyQt5.QtGui import QFont, QIcon, QPalette
 from PyQt5.QtCore import Qt, QUrl
 from PyQt5 import QtGui, QtWidgets
 from metadata import Ui_Dialog
@@ -66,22 +66,29 @@ class Window(QWidget):
         self.label = QLabel()
         self.label.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
 
-        #create hbox layout
-        hboxLayout = QHBoxLayout()
-        hboxLayout.setContentsMargins(0,0,0,0)
-
-        #set widgets in hbox layout format
-        hboxLayout.addWidget(openBtn)
-        hboxLayout.addWidget(editMetadata)
-        hboxLayout.addWidget(self.playBtn)
-        hboxLayout.addWidget(self.slider)
+        #adding dropdown menu combo box
+        comboBox = QtWidgets.QComboBox(self)
+        comboBox.addItem("Open File")
+        comboBox.addItem("Metadata")
+        comboBox.setFont(QFont('Open Sans', 12))
+        comboBox.activated[str].connect(self.comboBox_action)
 
         #make stacked widget to accomodate image show or video show
         #image show is for mp3 file
         self.Stack = QStackedWidget(self)
         self.Stack.addWidget(self.label_mp3img)
         self.Stack.addWidget(videowidget)
-        
+
+        #create hbox layout
+        hboxLayout = QHBoxLayout()
+        hboxLayout.setContentsMargins(0,0,0,0)
+
+        #set widgets in hbox layout format
+        # hboxLayout.addWidget(openBtn)
+        # hboxLayout.addWidget(editMetadata)
+        hboxLayout.addWidget(comboBox)
+        hboxLayout.addWidget(self.playBtn)
+        hboxLayout.addWidget(self.slider)
 
         #create vbox layout
         vboxLayout = QVBoxLayout()
@@ -102,6 +109,12 @@ class Window(QWidget):
         self.mediaPlayer.positionChanged.connect(self.position_changed)
         self.mediaPlayer.durationChanged.connect(self.duration_changed)
 
+
+    def comboBox_action(self, text):
+        if text == "Open File":
+            self.open_file()
+        if text == "Metadata":
+            self.edit_metadata()
 
     def open_file(self):
         self.filename, _ = QFileDialog.getOpenFileName(self, "Open Video")
